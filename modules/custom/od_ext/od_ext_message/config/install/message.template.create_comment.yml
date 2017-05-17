@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies: {  }
+template: create_comment
+label: 'Create comment'
+description: 'A user created comment.'
+text:
+  -
+    value: "<p><a href=\"[message:user-url]\">[message:user-name]</a>&nbsp;<a href=\"[message:comment-url]\">commented</a> on&nbsp;[message:node-title]</p>\r\n"
+    format: rich_text
+  -
+    value: "<p>[message:node-render]</p>\r\n"
+    format: rich_text
+settings:
+  'token options':
+    clear: false
+    'token replace': true
+  purge_override: false
+  purge_methods: {  }

@@ -1,0 +1,12 @@
+name: 'Open Data Extend Message'
+description: 'Provides notifications and activity stream related functionality.'
+type: module
+core: 8.x
+package: 'Open Data'
+
+# Required modules
+dependencies:
+  - drupal:flag
+  - drupal:message
+  - drupal:message_notify
+  - drupal:message_subscribe
