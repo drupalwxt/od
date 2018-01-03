@@ -1,46 +1,46 @@
 services:
   od_ext_breadcrumb.main_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\MainBreadcrumbBuilder
-    arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.matcher']
+    arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1010 }
+     - { name: breadcrumb_builder, priority: 1015 }
   od_ext_breadcrumb.app_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\AppBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1015 }
+     - { name: breadcrumb_builder, priority: 1020 }
   od_ext_breadcrumb.blog_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\BlogBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1015 }
+     - { name: breadcrumb_builder, priority: 1020 }
   od_ext_breadcrumb.commitment_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\CommitmentBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager', '@entity.manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1015 }
+     - { name: breadcrumb_builder, priority: 1020 }
   od_ext_breadcrumb.consultation_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\ConsultationBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1015 }
+     - { name: breadcrumb_builder, priority: 1020 }
   od_ext_breadcrumb.external_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\ExternalBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1015 }
+     - { name: breadcrumb_builder, priority: 1020 }
   od_ext_breadcrumb.idea_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\IdeaBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1015 }
+     - { name: breadcrumb_builder, priority: 1020 }
   od_ext_breadcrumb.pd_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\ProactiveDisclosureBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1020 }
+     - { name: breadcrumb_builder, priority: 1025 }
   od_ext_breadcrumb.suggested_dataset_breadcrumb:
     class: Drupal\od_ext_breadcrumb\Breadcrumb\SuggestedDatasetBreadcrumbBuilder
     arguments: ['@router.request_context', '@access_manager', '@router', '@path_processor_manager', '@config.factory',  '@title_resolver', '@current_user', '@path.current', '@language_manager', '@path.validator', '@path.alias_manager']
     tags:
-     - { name: breadcrumb_builder, priority: 1015 }
+     - { name: breadcrumb_builder, priority: 1020 }
