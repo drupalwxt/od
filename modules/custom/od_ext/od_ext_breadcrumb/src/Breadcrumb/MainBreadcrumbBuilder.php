@@ -152,7 +152,7 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
 
     $path = trim($this->context->getPathInfo(), '/');
     $path_elements = explode('/', $path);
-    if ($path_elements[1] == 'community') {
+    if ((isset($path_elements[1])) && ($path_elements[1] == 'community')) {
       return TRUE;
     }
     else {
