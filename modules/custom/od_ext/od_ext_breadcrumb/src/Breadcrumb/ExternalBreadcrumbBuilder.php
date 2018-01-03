@@ -186,7 +186,7 @@ class ExternalBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
 
         $nid = $this->aliasManager->getPathByAlias('/open-data', 'en');
         $open_data = $this->pathValidator->getUrlIfValid($nid);
-	$nid = $this->aliasManager->getPathByAlias('/search/inventory', 'en');
+        $nid = $this->aliasManager->getPathByAlias('/search/inventory', 'en');
         $open_inventory = $this->pathValidator->getUrlIfValid($nid);
         preg_match("/[^\/]+$/", $path, $packageId);
         $id = explode("-", $packageId[0], 2);
@@ -197,16 +197,18 @@ class ExternalBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
         else {
           $ckan = Url::fromUri($this->context->getCompleteBaseUrl() . '/data/' . $this->languageManager->getCurrentLanguage()->getId() . '/dataset');
         }
-	$linkOpenGov = Link::createFromRoute($this->t('Open Government'), '<front>');
-	$linkOpenData = Link::createFromRoute($this->t('Open Data'), $open_data->getRouteName(), $open_data->getRouteParameters());
+        $linkOpenGov = Link::createFromRoute($this->t('Open Government'), '<front>');
+        $linkOpenData = Link::createFromRoute($this->t('Open Data'), $open_data->getRouteName(), $open_data->getRouteParameters());
 
-	if (strpos($path, "inventory") != FALSE) {
-	  $linkOpenInventory = Link::createFromRoute($this->t('Open Data Inventory'), $open_inventory->getRouteName(), $open_inventory->getRouteParameters());
+        if (strpos($path, "inventory") != FALSE) {
+          $linkOpenInventory = Link::createFromRoute($this->t('Open Data Inventory'), $open_inventory->getRouteName(), $open_inventory->getRouteParameters());
           array_unshift($links, $link, $linkOpenGov, $linkOpenData, $linkOpenInventory);
-	} elseif ((strpos($path, "ckan") != FALSE) && (!empty($ckan))) {
+        }
+        elseif ((strpos($path, "ckan") != FALSE) && (!empty($ckan))) {
           $linkCkan = Link::fromTextAndUrl($this->t('Dataset'), $ckan);
-          array_unshift($links, $link, $linkOpenGov, $linkOpenData, $link_ckan);
-	} else {
+          array_unshift($links, $link, $linkOpenGov, $linkOpenData, $linkCkan);
+        }
+        else {
           array_unshift($links, $link, $linkOpenGov, $linkOpenData);
         }
       }

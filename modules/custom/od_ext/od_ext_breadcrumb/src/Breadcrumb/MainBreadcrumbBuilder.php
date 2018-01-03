@@ -11,7 +11,6 @@ use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
-use Drupal\Core\Path\PathMatcherInterface;
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
 use Drupal\Core\Path\PathValidator;
 use Drupal\Core\Routing\RequestContext;
@@ -20,7 +19,6 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
-use Drupal\taxonomy\TermInterface;
 
 class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
 
@@ -156,7 +154,8 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
     $path_elements = explode('/', $path);
     if ($path_elements[1] == 'community') {
       return TRUE;
-    } else {
+    }
+    else {
       return FALSE;
     }
   }
@@ -181,7 +180,7 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
         }
         $link = array_shift($links);
         $link->setUrl(Url::fromUri($url));
-        
+
         $nid = $this->aliasManager->getPathByAlias('/open-dialogue', 'en');
         $open_dialogue = $this->pathValidator->getUrlIfValid($nid);
         $nid = $this->aliasManager->getPathByAlias('/communities', 'en');
@@ -194,9 +193,6 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
       }
 
       $breadcrumb = new Breadcrumb();
-      $node_object = $route_match->getParameters()->get('node');
-
-
       $breadcrumb->addCacheContexts(['url.path.parent']);
       $breadcrumb->setLinks($links);
     }
