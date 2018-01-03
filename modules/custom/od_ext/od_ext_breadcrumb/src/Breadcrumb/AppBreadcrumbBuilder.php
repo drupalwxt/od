@@ -183,9 +183,9 @@ class AppBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
     if ($route && !$route->getOption('_admin_route')) {
       $links = $breadcrumb->getLinks();
       if (!empty($links) && $links[0]->getText() == $this->t('Home')) {
-        $url = 'https://www.canada.ca';
+        $url = 'https://www.canada.ca/en.html';
         if ($this->languageManager->getCurrentLanguage()->getId() == 'fr') {
-          $url = 'https://www.canada.ca/fr';
+          $url = 'https://www.canada.ca/fr.html';
         }
         $link = array_shift($links);
         $link->setUrl(Url::fromUri($url));

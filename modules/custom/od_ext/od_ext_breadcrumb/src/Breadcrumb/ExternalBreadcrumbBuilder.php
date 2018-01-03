@@ -177,28 +177,37 @@ class ExternalBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
     if ($route && !$route->getOption('_admin_route')) {
       $links = $breadcrumb->getLinks();
       if (!empty($links) && $links[0]->getText() == $this->t('Home')) {
-        $url = 'https://www.canada.ca';
+        $url = 'https://www.canada.ca/en.html';
         if ($this->languageManager->getCurrentLanguage()->getId() == 'fr') {
-          $url = 'https://www.canada.ca/fr';
+          $url = 'https://www.canada.ca/fr.html';
         }
         $link = array_shift($links);
         $link->setUrl(Url::fromUri($url));
 
-        $nid = $this->aliasManager->getPathByAlias('/open-information', 'en');
-        $open_info = $this->pathValidator->getUrlIfValid($nid);
+        $nid = $this->aliasManager->getPathByAlias('/open-data', 'en');
+        $open_data = $this->pathValidator->getUrlIfValid($nid);
+	$nid = $this->aliasManager->getPathByAlias('/search/inventory', 'en');
+        $open_inventory = $this->pathValidator->getUrlIfValid($nid);
         preg_match("/[^\/]+$/", $path, $packageId);
         $id = explode("-", $packageId[0], 2);
+
         if (isset($id[1]) && !empty($id[1])) {
           $ckan = Url::fromUri($this->context->getCompleteBaseUrl() . '/data/' . $this->languageManager->getCurrentLanguage()->getId() . '/dataset/' . $id[1]);
         }
         else {
           $ckan = Url::fromUri($this->context->getCompleteBaseUrl() . '/data/' . $this->languageManager->getCurrentLanguage()->getId() . '/dataset');
         }
-        if (!empty($open_info) && !empty($ckan)) {
-          $linkOpenGov = Link::createFromRoute($this->t('Open Government'), '<front>');
-          $linkOpenInfo = Link::createFromRoute($this->t('Open Information'), $open_info->getRouteName(), $open_info->getRouteParameters());
+	$linkOpenGov = Link::createFromRoute($this->t('Open Government'), '<front>');
+	$linkOpenData = Link::createFromRoute($this->t('Open Data'), $open_data->getRouteName(), $open_data->getRouteParameters());
+
+	if (strpos($path, "inventory") != FALSE) {
+	  $linkOpenInventory = Link::createFromRoute($this->t('Open Data Inventory'), $open_inventory->getRouteName(), $open_inventory->getRouteParameters());
+          array_unshift($links, $link, $linkOpenGov, $linkOpenData, $linkOpenInventory);
+	} elseif ((strpos($path, "ckan") != FALSE) && (!empty($ckan))) {
           $linkCkan = Link::fromTextAndUrl($this->t('Dataset'), $ckan);
-          array_unshift($links, $link, $linkOpenGov, $linkOpenInfo, $linkCkan);
+          array_unshift($links, $link, $linkOpenGov, $linkOpenData, $link_ckan);
+	} else {
+          array_unshift($links, $link, $linkOpenGov, $linkOpenData);
         }
       }
 

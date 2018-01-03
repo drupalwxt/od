@@ -31,12 +31,12 @@ class PanelizerViewMode extends PreprocessBase {
       $children = Element::children($variables['content']['top_left']);
       foreach ($children as $value) {
         $block = $variables['content']['top_left'][$value];
-        if (!empty($block['#base_plugin_id']) && $block['#base_plugin_id'] == 'menu_block') {
+        if (!empty($block['#base_plugin_id']) && in_array($block['#base_plugin_id'],array('menu_block','system_menu_block'))) {
           if ($language == 'en' && strpos($block['#plugin_id'], '-fr') !== FALSE) {
-            $variables['content']['top_left'][$value]['#access'] = FALSE;
+            // $variables['content']['top_left'][$value]['#access'] = FALSE;
           }
           if ($language == 'fr' && strpos($block['#plugin_id'], '-fr') === FALSE) {
-            $variables['content']['top_left'][$value]['#access'] = FALSE;
+            // $variables['content']['top_left'][$value]['#access'] = FALSE;
           }
         }
       }
