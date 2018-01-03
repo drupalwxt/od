@@ -8,8 +8,9 @@ use Drupal\Core\Access\AccessManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\TitleResolverInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Link;
+use Drupal\Core\Path\AliasManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
-use Drupal\Core\Path\PathMatcherInterface;
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
 use Drupal\Core\Path\PathValidator;
 use Drupal\Core\Routing\RequestContext;
@@ -18,7 +19,6 @@ use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
-use Drupal\taxonomy\TermInterface;
 
 class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
 
@@ -117,6 +117,8 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
    *   The path validator.
    * @param \Drupal\Core\Path\PathMatcherInterface $path_matcher
    *   The path matcher.
+   * @param \Drupal\Core\Path\AliasManager $alias_manager
+   *   The alias manager.
    */
   public function __construct(
     RequestContext $context,
@@ -129,7 +131,7 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
     CurrentPathStack $current_path,
     LanguageManagerInterface $language_manager,
     PathValidator $pathValidator,
-    PathMatcherInterface $path_matcher) {
+    AliasManagerInterface $alias_manager) {
     $this->context = $context;
     $this->accessManager = $access_manager;
     $this->router = $router;
@@ -140,19 +142,21 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
     $this->currentPath = $current_path;
     $this->languageManager = $language_manager;
     $this->pathValidator = $pathValidator;
-    $this->pathMatcher = $path_matcher;
+    $this->aliasManager = $alias_manager;
   }
 
   /**
    * {@inheritdoc}
    */
   public function applies(RouteMatchInterface $route_match) {
-    if ($route_match->getRouteName() == 'entity.taxonomy_term.canonical' &&
-        $route_match->getParameter('taxonomy_term') instanceof TermInterface) {
-      return FALSE;
+
+    $path = trim($this->context->getPathInfo(), '/');
+    $path_elements = explode('/', $path);
+    if ((isset($path_elements[1])) && ($path_elements[1] == 'community')) {
+      return TRUE;
     }
     else {
-      return TRUE;
+      return FALSE;
     }
   }
 
@@ -160,20 +164,32 @@ class MainBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
    * {@inheritdoc}
    */
   public function build(RouteMatchInterface $route_match) {
-    $breadcrumb = parent::build($route_match);
+    $breadcrumb = new Breadcrumb();
+    $links = [];
+    $links[] = Link::createFromRoute($this->t('Home'), '<front>');
+    $breadcrumb->setLinks(array_reverse($links));
 
     $route = $route_match->getRouteObject();
     if ($route && !$route->getOption('_admin_route')) {
       $links = $breadcrumb->getLinks();
 
       if (!empty($links) && $links[0]->getText() == $this->t('Home')) {
-        $url = 'https://www.canada.ca';
+        $url = 'https://www.canada.ca/en.html';
         if ($this->languageManager->getCurrentLanguage()->getId() == 'fr') {
-          $url = 'https://www.canada.ca/fr';
+          $url = 'https://www.canada.ca/fr.html';
         }
         $link = array_shift($links);
         $link->setUrl(Url::fromUri($url));
-        array_unshift($links, $link);
+
+        $nid = $this->aliasManager->getPathByAlias('/open-dialogue', 'en');
+        $open_dialogue = $this->pathValidator->getUrlIfValid($nid);
+        $nid = $this->aliasManager->getPathByAlias('/communities', 'en');
+        $communities = $this->pathValidator->getUrlIfValid($nid);
+
+        $linkOpenGov = Link::createFromRoute($this->t('Open Government'), '<front>');
+        $linkOpenDialogue = Link::createFromRoute($this->t('Open Dialogue'), $open_dialogue->getRouteName(), $open_dialogue->getRouteParameters());
+        $linkCommunities = Link::createFromRoute($this->t('Communities'), $communities->getRouteName(), $communities->getRouteParameters());
+        array_unshift($links, $link, $linkOpenGov, $linkOpenDialogue, $linkCommunities);
       }
 
       $breadcrumb = new Breadcrumb();

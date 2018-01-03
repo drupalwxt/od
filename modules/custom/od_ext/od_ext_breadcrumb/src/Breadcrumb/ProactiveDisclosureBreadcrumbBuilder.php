@@ -164,7 +164,6 @@ class ProactiveDisclosureBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
           'grants',
           'hospitalitya',
           'hospitalityq',
-          'inventory',
           'reclassification',
           'travela',
           'travelq',
@@ -200,9 +199,9 @@ class ProactiveDisclosureBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
     if ($route && !$route->getOption('_admin_route')) {
       $links = $breadcrumb->getLinks();
       if (!empty($links) && $links[0]->getText() == $this->t('Home')) {
-        $url = 'https://www.canada.ca';
+        $url = 'https://www.canada.ca/en.html';
         if ($this->languageManager->getCurrentLanguage()->getId() == 'fr') {
-          $url = 'https://www.canada.ca/fr';
+          $url = 'https://www.canada.ca/fr.html';
         }
         $link = array_shift($links);
         $link->setUrl(Url::fromUri($url));
@@ -214,10 +213,24 @@ class ProactiveDisclosureBreadcrumbBuilder extends PathBasedBreadcrumbBuilder {
         if (!empty($open_info) && !empty($pd)) {
           $linkOpenGov = Link::createFromRoute($this->t('Open Government'), '<front>');
           $linkOpenInfo = Link::createFromRoute($this->t('Open Information'), $open_info->getRouteName(), $open_info->getRouteParameters());
-          $linkPD = Link::createFromRoute($this->t('Proactive Disclosure'), $pd->getRouteName(), $pd->getRouteParameters());
           $pathEnd = end($path_elements);
-          if (!empty($pathEnd) && $pathEnd != 'proactive-disclosure') {
-            array_unshift($links, $link, $linkOpenGov, $linkOpenInfo, $linkPD);
+          if ((!empty($pathEnd)) && ($pathEnd != 'ati') && ($pathEnd != 'proactive-disclosure')) {
+            $linkPD = Link::createFromRoute($this->t('Proactive Disclosure'), $pd->getRouteName(), $pd->getRouteParameters());
+            if (preg_match("/search\/(.*)\/reference/i", $path, $matches)) {
+              $pdtype_nid = $this->aliasManager->getPathByAlias('/search/' . $matches[1], 'en');
+              $pdtype = $this->pathValidator->getUrlIfValid($pdtype_nid);
+              $linkPDType = Link::createFromRoute($this->t('Search'), $pdtype->getRouteName(), $pdtype->getRouteParameters());
+              array_unshift($links, $link, $linkOpenGov, $linkOpenInfo, $linkPD, $linkPDType);
+            }
+            else {
+              array_unshift($links, $link, $linkOpenGov, $linkOpenInfo, $linkPD);
+            }
+          }
+          elseif ((!empty($pathEnd)) && ($pathEnd == 'ati')) {
+            $ati_nid = $this->aliasManager->getPathByAlias('/access-to-information', 'en');
+            $ati = $this->pathValidator->getUrlIfValid($ati_nid);
+            $linkATI = Link::createFromRoute($this->t('Access to Information'), $ati->getRouteName(), $ati->getRouteParameters());
+            array_unshift($links, $link, $linkOpenGov, $linkOpenInfo, $linkATI);
           }
           else {
             array_unshift($links, $link, $linkOpenGov, $linkOpenInfo);
